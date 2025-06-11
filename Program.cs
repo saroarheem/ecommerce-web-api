@@ -21,24 +21,18 @@ app.MapGet("/", () =>
     return "get method worked";
 });
 
-app.MapGet("/hello", () =>
+var Products = new List<Product>()
 {
-    return "hello from MapGet";
+    new Product("Apple",20),
+    new Product("Banana",10),
+ };
+
+app.MapGet("/products", () =>
+{
+    return Results.Ok(Products);       // 200
 });
 
-app.MapPost("/hello", () =>
-{
-    return "hello from MapPost";
-});
-
-app.MapPut("/hello", () =>
-{
-    return "hello from MapPut";
-});
-
-app.MapDelete("/hello", () =>
-{
-    return "hello from MapDelete";
-});
 
 app.Run();
+
+public record Product(string Name, int Price);
