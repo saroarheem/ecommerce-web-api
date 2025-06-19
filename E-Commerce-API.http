@@ -3,9 +3,26 @@ GET http://localhost:5178
 
 ###
 GET http://localhost:5178/api/catagories
+
 ###
 POST http://localhost:5178/api/catagories
+Content-Type: application/json
+
+{
+
+        "description":"good catagory"
+
+}
+
 ###
-DELETE http://localhost:5178/api/catagories
+DELETE http://localhost:5178/api/catagories/7fead969-cb0a-4a7b-ae7e-3c82821f2477
+
 ###
-PUT http://localhost:5178/api/catagories
+PUT http://localhost:5178/api/catagories/4ac30243-8987-46bb-9068-61fa9a44f8ff
+Content-Type: application/json
+
+{
+        "name":"Food",
+        "description":"good catagory"
+
+}
