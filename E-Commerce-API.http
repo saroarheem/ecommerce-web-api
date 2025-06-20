@@ -9,8 +9,8 @@ POST http://localhost:5178/api/catagories
 Content-Type: application/json
 
 {
-
-        "description":"good catagory"
+        "name":"",
+        "description":""
 
 }
 

@@ -43,14 +43,7 @@ namespace E_Commerce_API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Where(e => e.Value.Errors.Count > 0).Select(e => new
-                {
-                    Field = e.Key,
-                    Message = e.Value.Errors.Select(x => x.ErrorMessage).ToArray()
-                }).ToList();
-
-                var errorString = string.Join("; ", errors.Select(e => $"{e.Field} : {string.Join(", ", e.Message)}"));
-                return BadRequest(errorString);
+                
             }
 
             var newCatagory = new Catagory
