@@ -32,7 +32,7 @@ namespace E_Commerce_API.Controllers
                 CreatedAt = c.CreatedAt
             }).ToList();
 
-            return Ok(catagoryList);       // 200
+            return Ok(ApiResponse<List<ReadCatagoryDto>>.SuccessResponse( catagoryList, 200,"Catagories returned successfully"));       // 200
 
         }
 
@@ -41,10 +41,6 @@ namespace E_Commerce_API.Controllers
         [HttpPost]
         public IActionResult CreateCatagory([FromBody] CreateCatagoryDto catagoryData)
         {
-            if (!ModelState.IsValid)
-            {
-                
-            }
 
             var newCatagory = new Catagory
             {
@@ -55,14 +51,14 @@ namespace E_Commerce_API.Controllers
             };
 
             catagories.Add(newCatagory);
-            var ReadCatagoryDto = new ReadCatagoryDto
+            var ResponseData = new ReadCatagoryDto
             {
                 CatagoryId = newCatagory.CatagoryId,
                 Name = newCatagory.Name,
                 Description = newCatagory.Description,
                 CreatedAt = newCatagory.CreatedAt
             };
-            return Created($"api/catagories/{newCatagory.CatagoryId}", ReadCatagoryDto);       // 200
+            return Created($"api/catagories/{newCatagory.CatagoryId}", ApiResponse<ReadCatagoryDto>.SuccessResponse( ResponseData, 201,"Catagory created successfully"));       // 200
 
 
         }
@@ -71,33 +67,16 @@ namespace E_Commerce_API.Controllers
         [HttpPut("{catagoryId:guid}")]
         public IActionResult UpdateCatagory(Guid catagoryId,[FromBody] UpdateCatagoryDto? catagoryData)
         {
-            if (catagoryData == null)
-            {
-                return BadRequest("Catagory data is missing.");
-            }
-
             var foundCatagory = catagories.FirstOrDefault(catagory => catagory.CatagoryId == catagoryId);       // 200
             if (foundCatagory == null)
             {
-                return NotFound("Catagory with this id does not exist.");
+                return NotFound(ApiResponse<object>.ErrorResponse(new List<string> {"Catagory with this id does not exist."},404,"Validation Failed."));
             }
-            if (!string.IsNullOrWhiteSpace(catagoryData.Name))
-            {
-                if (catagoryData.Name.Length >= 2)
-                {
-                    foundCatagory.Name = catagoryData.Name;
-                }
-                else
-                {
-                    return BadRequest("Name must be at least 2 character");
-                }
-            }
-            if (!string.IsNullOrWhiteSpace(catagoryData.Description))
-            {
-                foundCatagory.Description = catagoryData.Description;
-            }
+               
+            foundCatagory.Name = catagoryData.Name;
+            foundCatagory.Description = catagoryData.Description;
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResponse( null, 204,"Catagories updated successfully"));
 
         }
 
@@ -109,10 +88,10 @@ namespace E_Commerce_API.Controllers
             var foundCatagory = catagories.FirstOrDefault(catagory => catagory.CatagoryId == catagoryId);       // 200
             if (foundCatagory == null)
             {
-                return NotFound("Catagory with this id does not exist.");
+                return NotFound(ApiResponse<object>.ErrorResponse(new List<string> {"Catagory with this id does not exist."},404,"Validation Failed."));
             }
             catagories.Remove(foundCatagory);
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResponse(null, 204, "Category deleted successfully."));
 
         }
     }

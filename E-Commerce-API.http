@@ -9,16 +9,16 @@ POST http://localhost:5178/api/catagories
 Content-Type: application/json
 
 {
-        "name":"",
-        "description":""
+        "name":"Sports",
+        "description":"Bad catagory"
 
 }
 
 ###
-DELETE http://localhost:5178/api/catagories/7fead969-cb0a-4a7b-ae7e-3c82821f2477
+DELETE http://localhost:5178/api/catagories/29d57d3e-b556-43fd-aa99-f86ee127326e
 
 ###
-PUT http://localhost:5178/api/catagories/4ac30243-8987-46bb-9068-61fa9a44f8ff
+PUT http://localhost:5178/api/catagories/4158bdfa-3e6d-494e-8abd-386116ca8565
 Content-Type: application/json
 
 {
