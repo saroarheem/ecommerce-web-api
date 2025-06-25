@@ -1,10 +1,12 @@
 using E_Commerce_API.Controllers;
+using E_Commerce_API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<CatagoryService>();
 // Add Controller Service
 builder.Services.AddControllers();
 builder.Services.Configure<ApiBehaviorOptions>(Options =>

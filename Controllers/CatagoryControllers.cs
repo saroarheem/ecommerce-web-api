@@ -1,38 +1,45 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using E_Commerce_API.DTOs;
 using E_Commerce_API.Models;
+using E_Commerce_API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce_API.Controllers
 {
     [ApiController]
-    [Route("api/catagories/")]
+    [Route("v1/api/catagories/")]
     public class CatagoryController : ControllerBase
     {
-        public static List<Catagory> catagories = new List<Catagory>();
+        private CatagoryService _catagoryService;
+        public CatagoryController(CatagoryService catagoryService)
+        {
+            _catagoryService = catagoryService;
+        }
 
         // GET /api/catagories/ => get catagories
         [HttpGet]
-        public IActionResult GetCatagories([FromQuery] string searchValue = "")
+        public IActionResult GetCatagories()
         {
-            // if (!string.IsNullOrEmpty(searchValue))
-            // {
-            //     var searchCatagory = catagories.Where(c => c.Name.Contains(searchValue, StringComparison.OrdinalIgnoreCase)).ToList();
-            //     return Ok(searchCatagory);
-            // }
 
-            var catagoryList = catagories.Select(c => new ReadCatagoryDto
+            var catagoryList = _catagoryService.GetAllCatagories();
+            return Ok(ApiResponse<List<ReadCatagoryDto>>.SuccessResponse(catagoryList, 200, "Catagories returned successfully"));       // 200
+
+        }
+
+        [HttpGet("{catagoryId:guid}")]
+        public IActionResult GetCatagoryById(Guid catagoryId)
+        {
+            var catagory = _catagoryService.GetCatagoryById(catagoryId);
+            if (catagory == null)
             {
-                CatagoryId = c.CatagoryId,
-                Name = c.Name,
-                Description = c.Description,
-                CreatedAt = c.CreatedAt
-            }).ToList();
+                return NotFound(ApiResponse<object>.ErrorResponse(new List<string> { "Catagory with this id does not exist." }, 404, "Validation Failed."));
+            }
 
-            return Ok(ApiResponse<List<ReadCatagoryDto>>.SuccessResponse( catagoryList, 200,"Catagories returned successfully"));       // 200
+            return Ok(ApiResponse<ReadCatagoryDto>.SuccessResponse(catagory, 200, "Catagory returned successfully"));       // 200
 
         }
 
@@ -42,41 +49,26 @@ namespace E_Commerce_API.Controllers
         public IActionResult CreateCatagory([FromBody] CreateCatagoryDto catagoryData)
         {
 
-            var newCatagory = new Catagory
-            {
-                CatagoryId = Guid.NewGuid(),
-                Name = catagoryData.Name,
-                Description = catagoryData.Description,
-                CreatedAt = DateTime.UtcNow
-            };
+            var ResponseData = _catagoryService.CreateCatagory(catagoryData);
 
-            catagories.Add(newCatagory);
-            var ResponseData = new ReadCatagoryDto
-            {
-                CatagoryId = newCatagory.CatagoryId,
-                Name = newCatagory.Name,
-                Description = newCatagory.Description,
-                CreatedAt = newCatagory.CreatedAt
-            };
-            return Created($"api/catagories/{newCatagory.CatagoryId}", ApiResponse<ReadCatagoryDto>.SuccessResponse( ResponseData, 201,"Catagory created successfully"));       // 200
+            // return Created($"api/catagories/{newCatagory.CatagoryId}", ApiResponse<ReadCatagoryDto>.SuccessResponse(ResponseData, 201, "Catagory created successfully"));       // 200
+
+            return Created(nameof(GetCatagoryById), ApiResponse<ReadCatagoryDto>.SuccessResponse(ResponseData, 201, "Catagory created successfully"));       // 200
 
 
         }
         // PUT /api/catagories/{catagoryID} => Create a Catagory
 
         [HttpPut("{catagoryId:guid}")]
-        public IActionResult UpdateCatagory(Guid catagoryId,[FromBody] UpdateCatagoryDto? catagoryData)
+        public IActionResult UpdateCatagory(Guid catagoryId, [FromBody] UpdateCatagoryDto catagoryData)
         {
-            var foundCatagory = catagories.FirstOrDefault(catagory => catagory.CatagoryId == catagoryId);       // 200
-            if (foundCatagory == null)
+            var updateCatagory = _catagoryService.UpdateCatagoryById(catagoryId, catagoryData);       // 200
+            if (updateCatagory == null)
             {
-                return NotFound(ApiResponse<object>.ErrorResponse(new List<string> {"Catagory with this id does not exist."},404,"Validation Failed."));
+                return NotFound(ApiResponse<object>.ErrorResponse(new List<string> { "Catagory with this id does not exist." }, 404, "Validation Failed."));
             }
-               
-            foundCatagory.Name = catagoryData.Name;
-            foundCatagory.Description = catagoryData.Description;
 
-            return Ok(ApiResponse<object>.SuccessResponse( null, 204,"Catagories updated successfully"));
+            return Ok(ApiResponse<ReadCatagoryDto>.SuccessResponse(updateCatagory, 200, "Catagories updated successfully"));
 
         }
 
@@ -85,14 +77,14 @@ namespace E_Commerce_API.Controllers
         [HttpDelete("{catagoryId:guid}")]
         public IActionResult DeleteCatagory(Guid catagoryId)
         {
-            var foundCatagory = catagories.FirstOrDefault(catagory => catagory.CatagoryId == catagoryId);       // 200
-            if (foundCatagory == null)
+            var foundCatagory = _catagoryService.DeleteCatagoryById(catagoryId);       // 200
+            if (!foundCatagory)
             {
-                return NotFound(ApiResponse<object>.ErrorResponse(new List<string> {"Catagory with this id does not exist."},404,"Validation Failed."));
+                return NotFound(ApiResponse<object>.ErrorResponse(new List<string> { "Catagory with this id does not exist." }, 404, "Validation Failed."));
             }
-            catagories.Remove(foundCatagory);
+
             return Ok(ApiResponse<object>.SuccessResponse(null, 204, "Category deleted successfully."));
 
         }
-    }
+     }
 }

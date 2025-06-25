@@ -10,10 +10,10 @@ namespace E_Commerce_API.DTOs
     {
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Catagory name must be between 2 to 100 characters")]
 
-        public string Name { set; get; } = string.Empty;
+        public string? Name { set; get; }
 
         [StringLength(500, MinimumLength = 2, ErrorMessage = "Catagory Description must be between 2 to 500 characters")]
-        public string Description { set; get; } = string.Empty;
+        public string? Description { set; get; }
    
     }
 }

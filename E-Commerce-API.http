@@ -1,28 +1,29 @@
 
-GET http://localhost:5178
+###
+GET http://localhost:5178/v1/api/catagories
 
 ###
-GET http://localhost:5178/api/catagories
+GET http://localhost:5178/v1/api/catagories/7c9f3983-4e7d-4616-9e62-9ee27ea4b6f8
 
 ###
-POST http://localhost:5178/api/catagories
+POST http://localhost:5178/v1/api/catagories
 Content-Type: application/json
 
 {
-        "name":"Sports",
+        "name":"Electronics",
         "description":"Bad catagory"
 
 }
 
 ###
-DELETE http://localhost:5178/api/catagories/29d57d3e-b556-43fd-aa99-f86ee127326e
+DELETE http://localhost:5178/v1/api/catagories/e1170fe5-272a-4ae6-8515-1e7b9e713e8a
 
 ###
-PUT http://localhost:5178/api/catagories/4158bdfa-3e6d-494e-8abd-386116ca8565
+PUT http://localhost:5178/v1/api/catagories/a4842067-19e6-45c1-8ed7-70d08c0e32ea
 Content-Type: application/json
 
 {
-        "name":"Food",
-        "description":"good catagory"
+        "name":"Clothing",
+        "description":"Bad catagory"
 
 }
